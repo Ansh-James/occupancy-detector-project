@@ -1,0 +1,82 @@
+//Here is the code that Arduino runs
+// Occupancy Detector with Vacancy Hold Timer
+// Prevents false "vacant" when person sits still
+
+const int PIR_PIN = 2;
+const int LED_PIN = 13;
+
+bool occupied = false;
+unsigned long occupiedSince = 0;
+unsigned long lastMotionTime = 0;
+
+// How long with NO motion before declaring vacant (30 seconds)
+const unsigned long VACANCY_HOLD_MS = 30000;
+
+String formatDuration(unsigned long ms) {
+  unsigned long totalSecs = ms / 1000;
+  unsigned long mins = totalSecs / 60;
+  unsigned long secs = totalSecs % 60;
+  if (mins > 0) return String(mins) + "m " + String(secs) + "s";
+  return String(secs) + "s";
+}
+
+void setup() {
+  pinMode(PIR_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+
+  Serial.println("=================================");
+  Serial.println("  Room Occupancy Detection System");
+  Serial.println("  [Vacancy Hold: 30s]");
+  Serial.println("=================================");
+  Serial.println("Calibrating PIR sensor...");
+  delay(2000);
+  Serial.println("System ready! Monitoring...\n");
+}
+
+void loop() {
+  int motion = digitalRead(PIR_PIN);
+  unsigned long now = millis();
+
+  if (motion == HIGH) {
+    // Motion detected — always update last seen time
+    lastMotionTime = now;
+
+    if (!occupied) {
+      // --- Just became OCCUPIED ---
+      occupied = true;
+      occupiedSince = now;
+      digitalWrite(LED_PIN, HIGH);
+
+      Serial.println("-----------------------------");
+      Serial.println(">>> STATUS: OCCUPIED");
+      Serial.println("    Motion detected!");
+      Serial.println("-----------------------------");
+    }
+    // If already occupied, just reset the hold timer silently
+  }
+
+  if (occupied) {
+    unsigned long timeSinceMotion = now - lastMotionTime;
+    unsigned long timeOccupied = now - occupiedSince;
+
+    if (timeSinceMotion >= VACANCY_HOLD_MS) {
+      // --- No motion for 30s, now truly VACANT ---
+      occupied = false;
+      digitalWrite(LED_PIN, LOW);
+
+      Serial.println("-----------------------------");
+      Serial.println("    STATUS: VACANT");
+      Serial.println("    Was occupied for: " + formatDuration(timeOccupied));
+      Serial.println("    No motion for 30s");
+      Serial.println("-----------------------------");
+
+    } else if (timeSinceMotion > 5000) {
+      // Warn that the hold timer is counting down (after 5s of no motion)
+      unsigned long remaining = (VACANCY_HOLD_MS - timeSinceMotion) / 1000;
+      Serial.println("    [Countdown] Going vacant in " + String(remaining) + "s...");
+    }
+  }
+
+  delay(1000);
+}
