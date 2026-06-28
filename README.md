@@ -1,4 +1,4 @@
-# occupancy-detector-project
+# Occupancy-detector-project by Ansh Joseph James
 
 
 A real-time room occupancy detection system using a **PIR (Passive Infrared) motion sensor** and an **Arduino Uno**. The system detects human presence and displays live occupancy status via Serial Monitor, an LED indicator, and optionally a buzzer or LCD display.
@@ -15,7 +15,7 @@ Scope
 
 ---
 
-## 🛒 Components Required
+## Components 
 
 | Component            | Quantity |
 |----------------------|----------|
@@ -26,108 +26,21 @@ Scope
 | Breadboard           | 1        |
 | Jumper Wires         | Several  |
 | USB Cable (Type-B)   | 1        |
-| Buzzer *(optional)*  | 1        |
-| 16x2 LCD *(optional)*| 1        |
 
 
 
-## 🔌 Circuit Diagram
 
 
-PIR Sensor (HC-SR501)        Arduino Uno
-─────────────────────        ───────────
-VCC  ──────────────────────► 5V
-GND  ──────────────────────► GND
-OUT  ──────────────────────► Digital Pin 2
-
-LED
-────
-Anode (+) ─── 220Ω Resistor ─► Digital Pin 13
-Cathode (−) ──────────────────► GND
-```
 
 
-```
-realtime-occupancy-pir-arduino/
-├── src/
-│   └── occupancy_detector.ino   # Main Arduino sketch
-├── circuit/
-│   └── circuit_diagram.png      # Wiring diagram image
-├── docs/
-│   └── notes.md                 # Extra notes and references
-├── .gitignore
-├── LICENSE
-└── README.md
-```
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
+Prerequisites
 
 - [Arduino IDE](https://www.arduino.cc/en/software) installed on your PC
 - Arduino Uno board + USB cable
 - All components listed above
 
-### Installation & Upload
 
-1. **Clone this repository:**
-   ```bash
-   git clone https://github.com/your-username/realtime-occupancy-pir-arduino.git
-   cd realtime-occupancy-pir-arduino
-   ```
 
-2. **Open the sketch:**
-   - Launch Arduino IDE
-   - Open `src/occupancy_detector.ino`
-
-3. **Select your board and port:**
-   - Go to **Tools → Board → Arduino Uno**
-   - Go to **Tools → Port → COM# (Windows) / /dev/ttyUSB0 (Linux/Mac)**
-
-4. **Upload the sketch:**
-   - Click the **Upload** button (→ arrow icon)
-
-5. **Open Serial Monitor:**
-   - Go to **Tools → Serial Monitor**
-   - Set baud rate to `9600`
-   - Watch real-time occupancy status!
-
----
-
-## 💻 Code Overview
-
-```cpp
-// occupancy_detector.ino
-
-const int PIR_PIN = 2;    // PIR sensor output pin
-const int LED_PIN = 13;   // LED indicator pin
-
-void setup() {
-  pinMode(PIR_PIN, INPUT);
-  pinMode(LED_PIN, OUTPUT);
-  Serial.begin(9600);
-  Serial.println("System Ready. Waiting for motion...");
-  delay(2000); // Allow PIR sensor to calibrate
-}
-
-void loop() {
-  int motionDetected = digitalRead(PIR_PIN);
-
-  if (motionDetected == HIGH) {
-    digitalWrite(LED_PIN, HIGH);
-    Serial.println("Status: OCCUPIED 🔴");
-  } else {
-    digitalWrite(LED_PIN, LOW);
-    Serial.println("Status: VACANT  🟢");
-  }
-
-  delay(1000); // Check every 1 second
-}
-```
-
----
 
 **Working**
 1. The **PIR sensor** detects infrared radiation emitted by warm bodies
@@ -150,13 +63,13 @@ Future scope
 
 
 
-## 📄 License
+
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 
 Author
 Ansh James
-- GitHub: [@your-username](https://github.com/your-username)
+- GitHub: https://github.com/Ansh-James
 
 > Made with Arduino, and with the eatchings of L&T EduTech :)
